@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <script>if (localStorage.getItem("logado") !== "true") window.location.href = "login.html";</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fator X Assistência</title>
+  <style>
+        body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #121212;
+      color: #ffffff;
+    }
+
+    /* Tela de login */
+    #login-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #121212;
+    }
+    .login-box {
+      background-color: #1e1e1e;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 0 10px #00000080;
+    }
+    .login-box h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #00cc99;
+    }
+    .login-box input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #2b2b2b;
+      color: white;
+    }
+    .login-box button {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #00cc99;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .error {
+      background: #ff4d4d;
+      padding: 0.5rem;
+      border-radius: 6px;
+      text-align: center;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    /* Oculta conteúdo principal até login */
+    #main-content {
+      display: none;
+    }
+
+    :root {
+      --bg-color: #121212;
+      --text-color: #ffffff;
+      --box-color: #1e1e1e;
+      --input-color: #2b2b2b;
+      --accent-color: #00cc99;
+    }
+    [data-theme="light"] {
+      --bg-color: #f0f0f0;
+      --text-color: #000000;
+      --box-color: #ffffff;
+      --input-color: #e0e0e0;
+      --accent-color: #007a66;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+    }
+    header {
+      background-color: var(--box-color);
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 2px solid #333;
+    }
+    header img {
+      height: 100px;
+      max-width: 100%;
+      object-fit: contain;
+    }
+    .rodape {
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      opacity: 0.6;
+    }
+    main {
+      padding: 1rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    .section {
+      background: var(--box-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    h2 {
+      color: var(--accent-color);
+      margin-bottom: 0.5rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border: none;
+      border-radius: 5px;
+      background-color: var(--input-color);
+      color: var(--text-color);
+    }
+    .button {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--accent-color);
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .button-group-registros {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    #themeToggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: var(--accent-color);
+      border: none;
+      color: black;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    #historico {
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 1rem;
+    }
+    .registro {
+      background: var(--input-color);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+    }
+    .registro button {
+      margin-right: 0.5rem;
+      margin-top: 0.5rem;
+      background: var(--accent-color);
+      border: none;
+      color: black;
+      padding: 0.4rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .pdf-button {
+      background: #e74c3c !important;
+      color: white !important;
+    }
+    .info-storage {
+      background: #2c3e50;
+      color: #ecf0f1;
+      padding: 0.8rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+     .faturamento-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .faturamento-item {
+      background: var(--input-color);
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .faturamento-valor {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent-color);
+    }
+    
+    /* CORREÇÃO PRINCIPAL - Filtros de faturamento responsivos */
+    .faturamento-filtros {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .faturamento-filtros select {
+      min-width: unset;
+      width: 100%;
+    }
+    
+    /* Para telas maiores que 600px */
+    @media (min-width: 600px) {
+      .faturamento-filtros {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+      }
+    }
+    
+    /* Para telas maiores que 768px */
+    @media (min-width: 768px) {
+      .faturamento-filtros select {
+        min-width: 120px;
+      }
+    }
+    
+    .faturamento-detalhes {
+      background: var(--input-color);
+      padding: 0.8rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+    .estatisticas-extras {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .estatistica-item {
+      background: var(--input-color);
+      padding: 0.8rem;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    .estatistica-numero {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--accent-color);
+    }
+    
+    /* Melhorias adicionais para mobile */
+    @media (max-width: 480px) {
+      main {
+        padding: 0.5rem;
+      }
+      
+      .section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      
+      .faturamento-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      
+      .estatisticas-extras {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.5rem;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
+      
+      .button-group .button {
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+    }
+  
+.menu-navegacao {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  background: #1e1e1e;
+  padding: 1rem;
+  border-bottom: 1px solid #333;
+  flex-wrap: wrap;
+}
+
+.menu-navegacao a {
+  padding: 0.7rem 1.5rem;
+  font-weight: bold;
+  font-size: 1rem;
+  background-color: #00cc99;
+  border: none;
+  border-radius: 8px;
+  color: black;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.menu-navegacao a:hover {
+  background-color: #00b386;
+}
+
+</style>
+</head>
+<body>
+
+    <!-- Seção de login -->
+  <!--<section id="login-section">
+    <div class="login-box">
+      <h2>🔐 Login</h2>
+      <div id="login-error" class="error">Usuário ou senha incorretos!</div>
+      <input type="text" id="username" placeholder="Usuário" autocomplete="off" />
+      <input type="password" id="password" placeholder="Senha" />
+      <button onclick="fazerLogin()">Entrar</button>
+    </div>
+  </section>
+
+  <!-- Conteúdo do sistema (invisível até login) -->
+  <!--<div id="main-content">!--> <!--apagar (< !-- !-- >)!-->
+    <button id="themeToggle">🌗 Tema</button>
+    <header>
+      <img src="https://i.postimg.cc/YC6JsFr8/LOGO.png" alt="Logo FatorX" />
+    </header>
+  <div class="menu-navegacao">
+    <a href="ordem.html">📄 Ordem</a>
+    <a href="faturamento.html">💰 Faturamento</a>
+    <a href="servicos.html">🛠️ Serviços</a>
+  </div>
+
+    <main>
+       <div class="section">
+        <h2>💰 Faturamento</h2>
+        <div class="faturamento-filtros">
+          <select id="filtroMes" onchange="atualizarFaturamento()">
+            <option value="">📅 Todos os meses</option>
+            <option value="1">Janeiro</option>
+            <option value="2">Fevereiro</option>
+            <option value="3">Março</option>
+            <option value="4">Abril</option>
+            <option value="5">Maio</option>
+            <option value="6">Junho</option>
+            <option value="7">Julho</option>
+            <option value="8">Agosto</option>
+            <option value="9">Setembro</option>
+            <option value="10">Outubro</option>
+            <option value="11">Novembro</option>
+            <option value="12">Dezembro</option>
+          </select>
+          <select id="filtroAno" onchange="atualizarFaturamento()">
+          <!-- Os anos serão inseridos dinamicamente -->
+          </select>
+
+          <select id="filtroStatus" onchange="atualizarFaturamento()">
+            <option value="">📊 Todos os status</option>
+            <option value="Concluído">Concluído</option>
+            <option value="Entregue">Entregue</option>
+            <option value="Aprovado">Aprovado</option>
+            <option value="Aguardando aprovação">Aguardando aprovação</option>
+            <option value="Em análise">Em análise</option>
+          </select>
+        </div>
+        <div class="faturamento-grid">
+          <div class="faturamento-item">
+            <div>📊 Faturamento Bruto</div>
+            <div class="faturamento-valor" id="faturamentoBruto">R$ 0,00</div>
+          </div>
+          <div class="faturamento-item">
+            <div>💵 Lucro Líquido</div>
+            <div class="faturamento-valor" id="lucroLiquido">R$ 0,00</div>
+          </div>
+        </div>
+        <div class="estatisticas-extras">
+          <div class="estatistica-item">
+            <div>🔧 Total de Serviços</div>
+            <div class="estatistica-numero" id="totalServicos">0</div>
+          </div>
+          <div class="estatistica-item">
+            <div>💰 Ticket Médio</div>
+            <div class="estatistica-numero" id="ticketMedio">R$ 0,00</div>
+          </div>
+          <div class="estatistica-item">
+            <div>📈 Margem de Lucro</div>
+            <div class="estatistica-numero" id="margemLucro">0%</div>
+          </div>
+          <div class="estatistica-item">
+            <div>💸 Custos Totais</div>
+            <div class="estatistica-numero" id="custosTotal">R$ 0,00</div>
+          </div>
+        </div>
+        <div class="faturamento-detalhes" id="faturamentoDetalhes">
+          📋 Selecione um período para ver os detalhes
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>📝 Registro de Diagnóstico</h2>
+        <label for="codigoGerado">Código Gerado:</label>
+        <input type="text" id="codigoGerado" readonly />
+        <button type="button" class="button" onclick="gerarNovoCodigo()">🔄 Gerar Novo Código</button>
+        <label for="os">Número da O.S.:</label>
+        <input type="text" id="os" readonly />
+        <label for="entrada">Data da entrada:</label>
+        <input type="text" id="entrada" oninput="formatarDataInput(this); limitarTamanhoData(this)" placeholder="dd/mm/aaaa" maxlength="10" />
+        <label for="saída">Data da Saída:</label>
+        <input type="text" id="saída" oninput="formatarDataInput(this); limitarTamanhoData(this)" placeholder="dd/mm/aaaa" maxlength="10" />
+        <label for="cliente">Nome do Cliente:</label>
+        <input type="text" id="cliente" />
+        <label for="marca">Marca:</label>
+        <input type="text" id="marca" />
+        <label for="modeloAparelho">Modelo do Aparelho:</label>
+        <input type="text" id="modeloAparelho" />
+        <label for="imei">IMEI:</label>
+        <input type="text" id="imei" />
+        <label for="diagnostico">Diagnóstico:</label>
+        <textarea id="diagnostico"></textarea>
+        <label for="solucao">Solução Aplicada:</label>
+        <textarea id="solucao"></textarea>
+        <label for="status">Status:</label>
+        <select id="status">
+          <option value="Em análise">Em análise</option>
+          <option value="Aguardando aprovação">Aguardando aprovação</option>
+          <option value="Aprovado">Aprovado</option>
+          <option value="Concluído">Concluído</option>
+          <option value="Entregue">Entregue</option>
+        </select>
+        <label for="valor">Valor (R$):</label>
+        <input type="text" id="valor" oninput="formatarMoeda(this)" />
+        <label for="custoPecas">Custo de Peças (R$):</label>
+        <input type="text" id="custoPecas" oninput="formatarMoeda(this)" />
+        <label for="tecnico">Técnico Responsável:</label>
+        <input type="text" id="tecnico" />
+        <label for="telefone">WhatsApp Cliente (ex: 5511999999999):</label>
+        <input type="text" id="telefone" />
+        <div class="button-group">
+          <button class="button" onclick="salvarRegistro()">💾 Salvar Registro</button>
+          <button class="button" onclick="enviarWhatsAppRegistro()">📲 Enviar WhatsApp</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>📚 Registros Salvos</h2>
+        <div class="info-storage">
+          📊 <span id="totalRegistros">0</span> registros salvos no navegador | 
+          Última atualização: <span id="ultimaAtualizacao">-</span>
+        </div>
+        <input type="text" id="busca" placeholder="🔍 Buscar por nome do cliente..." oninput="carregarRegistros()" />
+        <div class="button-group-registros">
+          <button class="button" onclick="exportarBackup()" style="background: #3498db !important; color: white !important;">💾 Exportar Backup</button>
+          <button class="button" onclick="document.getElementById('importFile').click()" style="background: #e67e22 !important; color: white !important;">📁 Importar Backup</button>
+          <input type="file" id="importFile" accept=".txt" style="display: none;" onchange="importarBackup(event)">
+        </div>
+        <div id="historico"></div>
+      </div>
+    </main>
+
+    <footer class="rodape">
+      <img src="https://i.postimg.cc/YC6JsFr8/LOGO.png" alt="Logo FatorX" style="height: 40px; margin-top: 10px;" /><br>
+      FATOR X © 2025 - Conserto de Celulares - Todos os direitos reservados
+    </footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let registros = [];
+    let contadorOS = 0;
+
+    // NOVA FUNCIONALIDADE: Armazenamento persistente
+    function salvarDados() {
+      try {
+        localStorage.setItem('fatorx_registros', JSON.stringify(registros));
+        localStorage.setItem('fatorx_contador', contadorOS.toString());
+        localStorage.setItem('fatorx_ultima_atualizacao', new Date().toLocaleString());
+        atualizarInfoStorage();
+        console.log('Dados salvos com sucesso!');
+      } catch (error) {
+        console.error('Erro ao salvar dados:', error);
+        alert('Erro ao salvar dados. Verifique o espaço disponível.');
+      }
+    }
+
+    function carregarDados() {
+      try {
+        const registrosSalvos = localStorage.getItem('fatorx_registros');
+        const contadorSalvo = localStorage.getItem('fatorx_contador');
+        
+        if (registrosSalvos) {
+          registros = JSON.parse(registrosSalvos);
+          console.log(`${registros.length} registros carregados do armazenamento local`);
+        }
+        
+        if (contadorSalvo) {
+          contadorOS = parseInt(contadorSalvo);
+        } else {
+          // Se não há contador salvo, calcular baseado nos registros existentes
+          contadorOS = registros.length;
+        }
+        
+        atualizarInfoStorage();
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+        // Se há erro, inicializar com dados de exemplo
+        inicializarDadosExemplo();
+      }
+    }
+
+    function atualizarInfoStorage() {
+      document.getElementById('totalRegistros').textContent = registros.length;
+      const ultimaAtualizacao = localStorage.getItem('fatorx_ultima_atualizacao');
+      document.getElementById('ultimaAtualizacao').textContent = ultimaAtualizacao || 'Nunca';
+    }
+
+    function inicializarDadosExemplo() {
+      registros = [
+        {
+          os: "OS-0001",
+          codigoGerado: "ABC123DEF",
+          cliente: "João Silva",
+          marca: "Samsung",
+          modelo: "Galaxy S21",
+          imei: "123456789012345",
+          diagnostico: "Tela quebrada",
+          solucao: "Substituição da tela",
+          status: "Concluído",
+          valor: "250,00",
+          custoPecas: "180,00",
+          tecnico: "Carlos",
+          telefone: "5511999999999",
+          data: "29/06/2025 10:30:00"
+        },
+        {
+          os: "OS-0002",
+          codigoGerado: "XYZ789GHI",
+          cliente: "Maria Santos",
+          marca: "iPhone",
+          modelo: "12 Pro",
+          imei: "987654321098765",
+          diagnostico: "Bateria não carrega",
+          solucao: "Troca da bateria",
+          status: "Em análise",
+          valor: "180,00",
+          custoPecas: "120,00",
+          tecnico: "Ana",
+          telefone: "5511888888888",
+          data: "29/06/2025 14:15:00"
+        }
+      ];
+      contadorOS = registros.length;
+      salvarDados(); // Salvar os dados de exemplo
+    }
+
+     // Funcionalidades de faturamento melhoradas
+    function converterValorParaNumero(valorString) {
+      if (!valorString || valorString === '') return 0;
+      return parseFloat(valorString.replace(/\./g, '').replace(',', '.')) || 0;
+    }
+
+    function formatarValorBRL(valor) {
+      return valor.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+    }
+
+    function extrairDataRegistro(dataString) {
+      const partes = dataString.split(' ')[0].split('/');
+      if (partes.length === 3) {
+        return {
+          dia: parseInt(partes[0]),
+          mes: parseInt(partes[1]),
+          ano: parseInt(partes[2])
+        };
+      }
+      return null;
+    }
+
+    function preencherFiltroAnos() {
+      const filtroAno = document.getElementById('filtroAno');
+      const anosEncontrados = new Set();
+      
+      registros.forEach(registro => {
+        const data = extrairDataRegistro(registro.data);
+        if (data) {
+          anosEncontrados.add(data.ano);
+        }
+      });
+      
+      // Limpar opções existentes (exceto a primeira)
+      filtroAno.innerHTML = '<option value="">📆 Todos os anos</option>';
+      
+      // Adicionar anos encontrados em ordem decrescente
+      Array.from(anosEncontrados).sort((a, b) => b - a).forEach(ano => {
+        const option = document.createElement('option');
+        option.value = ano;
+        option.textContent = ano;
+        filtroAno.appendChild(option);
+      });
+    }
+
+    function obterRegistროsFiltrados() {
+      const filtroMes = document.getElementById('filtroMes').value;
+      const filtroAno = document.getElementById('filtroAno').value;
+      const filtroStatus = document.getElementById('filtroStatus').value;
+
+      return registros.filter(registro => {
+        const dataRegistro = extrairDataRegistro(registro.data);
+        if (!dataRegistro) return false;
+
+        if (filtroMes && dataRegistro.mes !== parseInt(filtroMes)) {
+          return false;
+        }
+
+        if (filtroAno && dataRegistro.ano !== parseInt(filtroAno)) {
+          return false;
+        }
+
+        if (filtroStatus && registro.status !== filtroStatus) {
+          return false;
+        }
+
+        return true;
+      });
+    }
+
+    function atualizarFaturamento() {
+      const registrosFiltrados = obterRegistროsFiltrados();
+      
+      let faturamentoBruto = 0;
+      let custosTotal = 0;
+      let totalServicos = 0;
+
+      registrosFiltrados.forEach(registro => {
+        const valor = converterValorParaNumero(registro.valor);
+        const custo = converterValorParaNumero(registro.custoPecas);
+        
+        faturamentoBruto += valor;
+        custosTotal += custo;
+        
+        if (valor > 0) totalServicos++;
+      });
+
+      const lucroLiquido = faturamentoBruto - custosTotal;
+      const margemLucro = faturamentoBruto > 0 ? ((lucroLiquido / faturamentoBruto) * 100) : 0;
+      const ticketMedio = totalServicos > 0 ? faturamentoBruto / totalServicos : 0;
+
+      // Atualizar interface principal
+      document.getElementById('faturamentoBruto').textContent = formatarValorBRL(faturamentoBruto);
+      document.getElementById('lucroLiquido').textContent = formatarValorBRL(lucroLiquido);
+
+      // Atualizar estatísticas extras
+      document.getElementById('totalServicos').textContent = totalServicos;
+      document.getElementById('ticketMedio').textContent = formatarValorBRL(ticketMedio);
+      document.getElementById('margemLucro').textContent = margemLucro.toFixed(1) + '%';
+      document.getElementById('custosTotal').textContent = formatarValorBRL(custosTotal);
+
+      // Atualizar detalhes
+      const detalhes = document.getElementById('faturamentoDetalhes');
+      if (registrosFiltrados.length > 0) {
+        // Criar um resumo por status
+        const statusCount = {};
+        registrosFiltrados.forEach(registro => {
+          statusCount[registro.status] = (statusCount[registro.status] || 0) + 1;
+        });
+
+        const resumoStatus = Object.entries(statusCount)
+          .map(([status, count]) => `${status}: ${count}`)
+          .join(' | ');
+
+        detalhes.innerHTML = `
+          📊 <strong>Resumo do Período Selecionado:</strong><br>
+          • Período: ${obterDescricaoPeriodo()}<br>
+          • Distribuição por status: ${resumoStatus}<br>
+          • Receita média por serviço: ${formatarValorBRL(ticketMedio)}<br>
+          • Eficiência: ${margemLucro.toFixed(1)}% de margem de lucro<br>
+          • Investimento em peças: ${formatarValorBRL(custosTotal)}
+        `;
+      } else {
+        detalhes.innerHTML = '📋 Nenhum registro encontrado para os filtros selecionados';
+      }
+    }
+
+    function obterDescricaoPeriodo() {
+      const filtroMes = document.getElementById('filtroMes').value;
+      const filtroAno = document.getElementById('filtroAno').value;
+      const filtroStatus = document.getElementById('filtroStatus').value;
+      
+      const nomesMeses = [
+        '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+      ];
+      
+      let descricao = '';
+      
+      if (filtroMes) {
+        descricao += nomesMeses[parseInt(filtroMes)];
+      } else {
+        descricao += 'Todos os meses';
+      }
+      
+      if (filtroAno) {
+        descricao += ` de ${filtroAno}`;
+      } else {
+        descricao += ' (todos os anos)';
+      }
+      
+      if (filtroStatus) {
+        descricao += ` - Status: ${filtroStatus}`;
+      }
+      
+      return descricao;
+    }
+    // NOVA FUNCIONALIDADE: Sistema de Backup e Restore
+function exportarBackup() {
+  const senha = prompt("🔐 Digite uma senha para proteger o backup:");
+
+  if (!senha || senha.length < 4) {
+    alert("⚠️ Senha inválida. Digite ao menos 4 caracteres.");
+    return;
+  }
+
+  try {
+    const dadosBackup = {
+      versao: '1.0',
+      dataExportacao: new Date().toISOString(),
+      totalRegistros: registros.length,
+      contadorOS: contadorOS,
+      registros: registros
+    };
+
+    const textoPlano = JSON.stringify(dadosBackup);
+    const criptografado = CryptoJS.AES.encrypt(textoPlano, senha).toString();
+
+    const blob = new Blob([criptografado], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `FatorX_Backup_Criptografado_${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    alert("✅ Backup criptografado exportado com sucesso!");
+  } catch (e) {
+    console.error("Erro ao exportar:", e);
+    alert("❌ Falha ao exportar backup.");
+  }
+}
+
+    
+function importarBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const senha = prompt("🔐 Digite a senha usada na exportação:");
+  if (!senha || senha.length < 4) {
+    alert("⚠️ Senha inválida.");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const conteudoCriptografado = e.target.result;
+      const bytes = CryptoJS.AES.decrypt(conteudoCriptografado, senha);
+      const textoDescriptografado = bytes.toString(CryptoJS.enc.Utf8);
+
+      if (!textoDescriptografado) throw new Error("Senha incorreta ou conteúdo inválido.");
+
+      const dadosImportados = JSON.parse(textoDescriptografado);
+
+      if (!dadosImportados.registros || !Array.isArray(dadosImportados.registros)) {
+        throw new Error("Estrutura do backup inválida.");
+      }
+
+      const confirmar = confirm(
+        `🔄 Importar Backup Criptografado?\n\n` +
+        `📊 Registros: ${dadosImportados.totalRegistros || dadosImportados.registros.length}\n` +
+        `📅 Data: ${new Date(dadosImportados.dataExportacao).toLocaleString()}\n\n` +
+        `⚠️ Isso substituirá os dados atuais. Deseja continuar?`
+      );
+
+      if (!confirmar) return;
+
+      registros = dadosImportados.registros;
+      contadorOS = dadosImportados.contadorOS || registros.length;
+      salvarDados();
+      atualizarOS();
+      carregarRegistros();
+      alert("✅ Backup importado com sucesso!");
+    } catch (err) {
+      console.error("Erro ao importar:", err);
+      alert("❌ Falha ao importar. Verifique a senha ou o arquivo.");
+    }
+  };
+
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+
+    function atualizarOS() {
+      document.getElementById("os").value = `OS-${(contadorOS + 1).toString().padStart(4, '0')}`;
+      gerarNovoCodigo();
+    }
+
+    function gerarNovoCodigo() {
+      const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let codigo = '';
+      for (let i = 0; i < 9; i++) {
+        if (i === 3 || i === 6) {
+          codigo += Math.floor(Math.random() * 10);
+        } else {
+          codigo += caracteres.charAt(Math.floor(Math.random() * 26));
+        }
+      }
+      document.getElementById("codigoGerado").value = codigo;
+    }
+
+    function formatarMoeda(input) {
+      let valor = input.value.replace(/\D/g, '');
+      
+      if (valor === '') {
+        input.value = '';
+        return;
+      }
+      
+      valor = parseInt(valor);
+      
+      if (valor === 0) {
+        input.value = '0,00';
+        return;
+      }
+      
+      let centavos = valor % 100;
+      let reais = Math.floor(valor / 100);
+      
+      let valorFormatado = reais.toLocaleString('pt-BR');
+      
+      if (centavos < 10) {
+        valorFormatado += ',0' + centavos;
+      } else {
+        valorFormatado += ',' + centavos;
+      }
+      
+      input.value = valorFormatado;
+    }
+
+    function salvarRegistro() {
+      const novo = obterFormulario();
+      novo.data = new Date().toLocaleString();
+      registros.push(novo);
+      contadorOS++;
+      
+      // NOVA FUNCIONALIDADE: Salvar no localStorage
+      salvarDados();
+      
+      atualizarOS();
+      carregarRegistros();
+      alert("Registro salvo com sucesso!");
+      limparFormulario();
+    }
+
+    function obterFormulario() {
+      return {
+        os: document.getElementById("os").value,
+        codigoGerado: document.getElementById("codigoGerado").value,
+        cliente: document.getElementById("cliente").value,
+        marca: document.getElementById("marca").value,
+        modelo: document.getElementById("modeloAparelho").value,
+        imei: document.getElementById("imei").value,
+        diagnostico: document.getElementById("diagnostico").value,
+        solucao: document.getElementById("solucao").value,
+        status: document.getElementById("status").value,
+        valor: document.getElementById("valor").value,
+        custoPecas: document.getElementById("custoPecas").value,
+        tecnico: document.getElementById("tecnico").value,
+        telefone: document.getElementById("telefone").value
+      }
+    }
+
+    function limparFormulario() {
+  document.getElementById("entrada").value = "";
+  document.getElementById("saída").value = "";
+  document.getElementById("cliente").value = "";
+  document.getElementById("marca").value = "";
+  document.getElementById("modeloAparelho").value = "";
+  document.getElementById("imei").value = "";
+  document.getElementById("diagnostico").value = "";
+  document.getElementById("solucao").value = "";
+  document.getElementById("status").value = "Em análise"; // ou outro valor padrão
+  document.getElementById("valor").value = "";
+  document.getElementById("custoPecas").value = "";
+  document.getElementById("tecnico").value = "";
+  document.getElementById("telefone").value = "";
+}
+
+    function enviarWhatsAppRegistro(i = null) {
+      const r = i === null ? obterFormulario() : registros[i];
+      if (!r.telefone) return alert("Número de telefone não informado");
+      
+      const saudacao = () => {
+        const h = new Date().getHours();
+        if (h < 12) return "bom dia";
+        if (h < 18) return "boa tarde";
+        return "boa noite";
+      };
+
+      const termoGarantia = `
+📋 *TERMO DE GARANTIA PARA SERVIÇO DE REPARO EM SMARTPHONES E TABLETS*
+
+O prazo de garantia do serviço é de 90 dias a partir da data do conserto. 
+
+⚠️ *A garantia da Fator X Assistência não cobre:*
+• Defeitos ou danos resultantes do uso inadequado do produto pelo cliente ou terceiros
+• Peças expostas externamente arranhada, sujeira, marcas, manchas, trincada ou quebrada
+
+📝 *O consumidor declara e reconhece que:*
+I) É o legítimo proprietário do aparelho ou está autorizado para requisitar seu reparo
+II) Todas as informações fornecidas são verdadeiras
+III) Não nos responsabilizamos pela perda da garantia original do aparelho do cliente, dos dados, tais como agenda contatos, jogos, fotos, músicas, imagens, e demais conteúdo do aparelho
+IV) A Fator X Assistência não se responsabiliza por películas protetoras de tela e outros acessórios do gênero
+V) O cliente está informado e concorda que no reparo do aparelho poderão ser utilizadas peças recondicionadas em perfeitas condições de funcionamento
+
+Declaro que é minha responsabilidade a procedência deste material, declaro também estar de acordo com as observações citadas acima. 
+
+⚠️ *IMPORTANTE:* Necessário apresentação deste documento para retirada do produto. A data estimada de reparo pode ser alterada.`;
+
+      const msg = `Olá ${r.cliente}, ${saudacao()}!
+
+Estamos enviando uma prévia da sua O.S. ${r.os}:
+
+*Código:* ${r.codigoGerado}
+
+*Entrada:* ${r.entrada}
+
+*Saída:* ${r.saída}
+
+*Diagnóstico:* ${r.diagnostico}
+
+*Solução:* ${r.solucao}
+
+*Status:* ${r.status}
+
+*Valor:* R$ ${r.valor}
+
+*Técnico:* ${r.tecnico}
+
+${termoGarantia}
+
+Se precisar de mais informações, estamos à disposição.
+
+*FATOR X ASSISTÊNCIA* 📱
+Conserto de Celulares`;
+
+      window.open(`https://wa.me/${r.telefone}?text=${encodeURIComponent(msg)}`);
+    }
+
+    function carregarRegistros() {
+      const busca = document.getElementById("busca").value.toLowerCase();
+      const container = document.getElementById("historico");
+      const filtrados = registros.filter(r => r.cliente.toLowerCase().includes(busca)).slice(-5).reverse();
+      container.innerHTML = filtrados.map((r, i) => `
+        <div class="registro">
+          <b>${r.os}</b> - ${r.cliente} <br>
+          <small>${r.data} | Código: ${r.codigoGerado}</small><br>
+          <i>${r.marca} ${r.modelo} - IMEI: ${r.imei}</i><br>
+          Diagnóstico: ${r.diagnostico}<br>
+          Solução: ${r.solucao}<br>
+          Status: ${r.status} - Valor: R$ ${r.valor}<br>
+          Custo de Peças: R$ ${r.custoPecas}<br>
+          Técnico: ${r.tecnico}<br>
+          <div>
+            <button onclick="editarRegistro(${registros.findIndex(reg => reg.os === r.os)})">✏️ Editar</button>
+            <button onclick="apagarRegistro(${registros.findIndex(reg => reg.os === r.os)})">🗑️ Apagar</button>
+            <button onclick="enviarWhatsAppRegistro(${registros.findIndex(reg => reg.os === r.os)})">📲 WhatsApp</button>
+            <button onclick="gerarPDFIndividual(${registros.findIndex(reg => reg.os === r.os)})" class="pdf-button">📄 PDF</button>
+          </div>
+        </div>`).join("");
+    }
+
+    function editarRegistro(i) {
+      const r = registros[i];
+      document.getElementById("os").value = r.os;
+      document.getElementById("codigoGerado").value = r.codigoGerado;
+      document.getElementById("cliente").value = r.cliente;
+      document.getElementById("marca").value = r.marca;
+      document.getElementById("modeloAparelho").value = r.modelo;
+      document.getElementById("imei").value = r.imei;
+      document.getElementById("diagnostico").value = r.diagnostico;
+      document.getElementById("solucao").value = r.solucao;
+      document.getElementById("status").value = r.status;
+      document.getElementById("valor").value = r.valor;
+      document.getElementById("custoPecas").value = r.custoPecas;
+      document.getElementById("tecnico").value = r.tecnico;
+      document.getElementById("telefone").value = r.telefone;
+      registros.splice(i, 1);
+      
+      // NOVA FUNCIONALIDADE: Salvar após edição
+      salvarDados();
+      
+      carregarRegistros();
+    }
+
+    function apagarRegistro(i) {
+      if (confirm("Deseja apagar este registro?")) {
+        registros.splice(i, 1);
+        
+        // NOVA FUNCIONALIDADE: Salvar após exclusão
+        salvarDados();
+        
+        carregarRegistros();
+      }
+    }
+
+        // gerar PDF
+
+function gerarPDFIndividual(i) {
+  const r = registros[i];
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  // Configurações de cores
+  const corPrimaria = [0, 204, 153]; // Verde da Fator X
+  const corSecundaria = [44, 62, 80]; // Azul escuro
+  const corTexto = [0, 0, 0]; // Preto
+  const corCinza = [128, 128, 128]; // Cinza
+  
+  // ===== CABEÇALHO COM LOGO =====
+  // Carregar e inserir logo
+  const logoImg = new Image();
+  logoImg.crossOrigin = 'anonymous';
+  logoImg.onload = function() {
+    // Logo no canto superior esquerdo
+    doc.addImage(logoImg, 'PNG', 15, 10, 30, 20);
+    
+    // Continuar com o resto do PDF após carregar a logo
+    gerarRestoDoPDF();
+  };
+  logoImg.onerror = function() {
+    // Se erro ao carregar logo, continuar sem ela
+    gerarRestoDoPDF();
+  };
+
+    // Logo do PDF
+  logoImg.src = 'https://i.postimg.cc/YC6JsFr8/LOGO.png';
+  
+  function gerarRestoDoPDF() {
+    // Título da empresa
+    doc.setFontSize(18);
+    doc.setTextColor(...corTexto);
+    doc.setFont('helvetica', 'bold');
+    // doc.text('FATOR X ASSISTÊNCIA TÉCNICA', 80, 50);
+    
+    // Número da OS destacado
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`ORDEM DE SERVIÇO: ${r.os}`, 60, 18);
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Código: ${r.codigoGerado}`, 150, 15);
+    doc.text(`Data: ${r.data}`, 150, 22);
+    
+    // ===== DADOS DO CLIENTE (Layout compacto) =====
+    let y = 45;
+    
+    // Linha 1: Cliente e Status
+    doc.setTextColor(...corTexto);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Cliente:', 15, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(r.cliente, 40, y);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.text('Status:', 120, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(r.status, 140, y);
+    
+    // Linha 2: Telefone e Técnico
+    y += 7;
+    doc.setFont('helvetica', 'normal');
+    doc.text('Telefone:', 15, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(r.telefone || 'Não informado', 40, y);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.text('Técnico:', 120, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(r.tecnico, 140, y);
+    
+    // ===== DADOS DO APARELHO =====
+    y += 15;
+    doc.setTextColor(...corSecundaria);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DADOS DO APARELHO', 15, y);
+    
+    y += 10;
+    doc.setTextColor(...corTexto);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    
+    // Linha 1: Marca e Modelo
+    doc.text('Marca:', 15, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(r.marca, 35, y);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.text('Modelo:', 80, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(r.modelo, 105, y);
+    
+    // Linha 2: IMEI
+    y += 7;
+    doc.setFont('helvetica', 'normal');
+    doc.text('IMEI:', 15, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(r.imei, 35, y);
+    
+    // ===== DIAGNÓSTICO E SOLUÇÃO (Layout compacto) =====
+    y += 15;
+    doc.setTextColor(...corSecundaria);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DIAGNÓSTICO', 15, y);
+    
+    y += 8;
+    doc.setTextColor(...corTexto);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    
+    const diagnosticoLines = doc.splitTextToSize(r.diagnostico, 180);
+    doc.text(diagnosticoLines, 15, y);
+    y += diagnosticoLines.length * 5 + 8;
+    
+    doc.setTextColor(...corSecundaria);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('SOLUÇÃO APLICADA', 15, y);
+    
+    y += 8;
+    doc.setTextColor(...corTexto);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    
+    const solucaoLines = doc.splitTextToSize(r.solucao, 180);
+    doc.text(solucaoLines, 15, y);
+    y += solucaoLines.length * 5 + 10;
+    
+    // ===== VALORES =====
+    doc.setTextColor(...corSecundaria);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('VALORES', 15, y);
+    
+    y += 10;
+    doc.setTextColor(...corTexto);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    
+    doc.text('Custo de Peças:', 15, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`R$ ${r.custoPecas}`, 60, y);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.text('Valor Total:', 120, y);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text(`R$ ${r.valor}`, 155, y);
+    
+    // ===== TERMO DE GARANTIA (versão compacta) =====
+    y += 20;
+    doc.setTextColor(...corSecundaria);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('TERMO DE GARANTIA', 15, y);
+    
+// ===== Espaco entre termo de garantia e texto =====
+    y += 5;
+    doc.setTextColor(...corTexto);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    
+    const termoTexto = `
+
+O prazo de garantia do serviço é de 90 dias a partir da data do conserto. 
+
+A garantia da Fator X Assistência não cobre:
+• Defeitos ou danos resultantes do uso inadequado do produto pelo cliente ou terceiros
+• Peças expostas externamente arranhada, sujeira, marcas, manchas, trincada ou quebrada
+
+O consumidor declara e reconhece que:*
+I) É o legítimo proprietário do aparelho ou está autorizado para requisitar seu reparo
+II) Todas as informações fornecidas são verdadeiras
+III) Não nos responsabilizamos pela perda da garantia original do aparelho do cliente, dos dados, tais como agenda contatos, jogos, fotos, músicas, imagens, e demais conteúdo do aparelho
+IV) A Fator X Assistência não se responsabiliza por películas protetoras de tela e outros acessórios do gênero
+V) O cliente está informado e concorda que no reparo do aparelho poderão ser utilizadas peças recondicionadas em perfeitas condições de funcionamento
+
+Declaro que é minha responsabilidade a procedência deste material, declaro também estar de acordo com as observações citadas acima. `;
+    
+    const termoLines = doc.splitTextToSize(termoTexto, 180);
+    doc.text(termoLines, 15, y);
+    y += termoLines.length * 4 + 15;
+    
+    // ===== RODAPÉ (transparente com texto preto) =====
+    // Linha separadora simples
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.5);
+    doc.line(15, y, 195, y);
+    
+    y += 8;
+    // Informações da empresa
+    doc.setTextColor(...corTexto);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('FATOR X ASSISTÊNCIA TÉCNICA', 15, y);
+    
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    y += 5;
+    doc.text('Endereço: Rua das Tecnologias, 123 - Centro - Fortaleza/CE - CEP: 60000-000', 15, y);
+    y += 4;
+    doc.text('Telefone: (85) 9999-9999 | WhatsApp: (85) 99999-9999 | Email: contato@fatorx.com.br', 15, y);
+    
+    // Técnico responsável no lado direito
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Técnico: ${r.tecnico}`, 120, y - 9);
+    
+    // Data de geração
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Gerado em: ${new Date().toLocaleString()}`, 120, y - 5);
+    
+    // Salvar o PDF
+    doc.save(`OS_${r.os}_${r.cliente.replace(/\s+/g, '_')}.pdf`);
+  }
+}
+
+    function gerarPDFTodos() {
+      gerarPDFMultiplos(registros, 'Todos_Registros_FatorX.pdf');
+    }
+
+    function gerarPDFFiltrados() {
+      const busca = document.getElementById("busca").value.toLowerCase();
+      const filtrados = registros.filter(r => r.cliente.toLowerCase().includes(busca));
+      const nomeArquivo = busca ? `Registros_${busca}_FatorX.pdf` : 'Registros_Filtrados_FatorX.pdf';
+      gerarPDFMultiplos(filtrados, nomeArquivo);
+    }
+
+    function gerarPDFMultiplos(lista, nomeArquivo) {
+      if (lista.length === 0) {
+        alert('Nenhum registro encontrado!');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      // Cabeçalho principal
+      doc.setFontSize(18);
+      doc.setTextColor(0, 204, 153);
+      doc.text('FATOR X ASSISTÊNCIA', 20, 20);
+      
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Relatório de Registros (${lista.length} registro${lista.length > 1 ? 's' : ''})`, 20, 30);
+      doc.text(`Gerado em: ${new Date().toLocaleString()}`, 20, 40);
+      
+      let y = 55;
+      const lineHeight = 6;
+      const pageHeight = 280;
+      
+      lista.forEach((r, index) => {
+        // Verificar se precisa de nova página
+        if (y > pageHeight - 50) {
+          doc.addPage();
+          y = 20;
+        }
+        
+        // Dados do registro
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        
+        doc.text(`${index + 1}. ${r.os} - ${r.cliente}`, 20, y);
+        y += lineHeight;
+        doc.text(`   Data: ${r.data} | Técnico: ${r.tecnico} | Código: ${r.codigoGerado}`, 20, y);
+        y += lineHeight;
+        doc.text(`   ${r.marca} ${r.modelo} - IMEI: ${r.imei}`, 20, y);
+        y += lineHeight;
+        doc.text(`   Status: ${r.status} | Valor: R$ ${r.valor} | Custo Peças: R$ ${r.custoPecas}`, 20, y);
+        y += lineHeight;
+        doc.text(`   Diagnóstico: ${r.diagnostico.substring(0, 80)}${r.diagnostico.length > 80 ? '...' : ''}`, 20, y);
+        y += lineHeight;
+        doc.text(`   Solução: ${r.solucao.substring(0, 80)}${r.solucao.length > 80 ? '...' : ''}`, 20, y);
+        y += lineHeight * 2;
+      });
+      
+      // Rodapé
+      const totalPages = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.text('FATOR X © 2025 - Conserto de Celulares', 20, 290);
+        doc.text(`Página ${i} de ${totalPages}`, 160, 290);
+      }
+      
+      doc.save(nomeArquivo);
+    }
+
+    function alternarTema() {
+      const atual = document.documentElement.getAttribute("data-theme");
+      document.documentElement.setAttribute("data-theme", atual === "light" ? "dark" : "light");
+    }
+
+    function fazerLogin() {
+      const usuario = document.getElementById('username').value.trim();
+      const senha = document.getElementById('password').value.trim();
+      const erro = document.getElementById('login-error');
+
+      if (usuario === 'fator' && senha === '86260215') {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+      } else {
+        erro.style.display = 'block';
+        setTimeout(() => erro.style.display = 'none', 3000);
+      }
+    }
+
+    document.getElementById("themeToggle").addEventListener("click", alternarTema);
+    
+    // INICIALIZAÇÃO MODIFICADA: Carrega dados salvos
+    carregarDados(); // Carregar dados do localStorage
+    // Definir mês, ano e status padrão nos filtros de faturamento
+    const hoje = new Date();
+    document.getElementById('filtroMes').value = (hoje.getMonth() + 1).toString(); // Mês atual (1-12)
+    // Gerar os próximos 100 anos dinamicamente no filtro de ano
+    const filtroAno = document.getElementById('filtroAno');
+    const anoAtual = hoje.getFullYear();
+
+    filtroAno.innerHTML = '<option value="">📆 Todos os anos</option>'; // opção padrão
+
+    for (let i = 0; i < 100; i++) {
+    const ano = anoAtual + i;
+    const option = document.createElement('option');
+    option.value = ano;
+    option.textContent = `📆 ${ano}`;
+    filtroAno.appendChild(option);
+}
+
+// Selecionar o ano atual por padrão
+filtroAno.value = anoAtual.toString();
+    document.getElementById('filtroStatus').value = "Concluído";                   // Status padrão
+
+// Atualizar os dados já com os filtros aplicados
+atualizarFaturamento();
+    atualizarOS();
+    carregarRegistros();
+
+// Função para formatar data automaticamente com barras
+function formatarDataInput(input) {
+  let valor = input.value.replace(/\D/g, ''); // Remove tudo que não é número
+  
+  if (valor.length >= 2) {
+    valor = valor.substring(0, 2) + '/' + valor.substring(2);
+  }
+  if (valor.length >= 5) {
+    valor = valor.substring(0, 5) + '/' + valor.substring(5, 9);
+  }
+  
+  input.value = valor;
+}
+
+// Função para limitar o tamanho máximo da data
+function limitarTamanhoData(input) {
+  if (input.value.length > 10) {
+    input.value = input.value.substring(0, 10);
+  }
+}
+  </script>
+
+</body>
+</html>

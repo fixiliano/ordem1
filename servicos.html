@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lista de Serviços</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #121212;
+      color: #ffffff;
+    }
+    header {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 2px solid #333;
+    }
+    header img {
+      height: 100px;
+    }
+    .menu-navegacao {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      background: #1e1e1e;
+      padding: 1rem;
+      border-bottom: 1px solid #333;
+      flex-wrap: wrap;
+    }
+    .menu-navegacao a {
+      padding: 0.7rem 1.5rem;
+      font-weight: bold;
+      font-size: 1rem;
+      background-color: #00cc99;
+      border: none;
+      border-radius: 8px;
+      color: black;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+    .menu-navegacao a:hover {
+      background-color: #00b386;
+    }
+    main {
+      padding: 2rem;
+      text-align: center;
+    }
+    input#busca {
+  padding: 0.7rem;
+  width: 100%;
+  margin: 1rem 0;
+  border-radius: 8px;
+  background: #2b2b2b;
+  color: white;
+  border: none;
+}
+
+.info-storage {
+  font-size: 0.9rem;
+  color: #ccc;
+  margin: 0.5rem 0;
+}
+
+#historico {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.registro {
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #1e1e1e;
+}
+
+.registro strong {
+  display: inline-block;
+  width: 120px;
+}
+
+.registro .acoes button {
+  margin-right: 0.5rem;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://i.postimg.cc/YC6JsFr8/LOGO.png" alt="Logo FatorX" />
+  </header>
+  <div class="menu-navegacao">
+    <a href="ordem.html">📄 Ordem</a>
+    <a href="faturamento.html">💰 Faturamento</a>
+    <a href="servicos.html">🛠️ Serviços</a>
+    <a href="loja.html">🏠 Início</a>
+  </div>
+  <main>
+    <main>
+  <div class="section">
+    <h2>📚 Registros Salvos</h2>
+
+    <div class="info-storage">
+      📊 <span id="totalRegistros">0</span> registros salvos no navegador | 
+      Última atualização: <span id="ultimaAtualizacao">-</span>
+    </div>
+
+    <input type="text" id="busca" placeholder="🔍 Buscar por nome do cliente..." oninput="carregarRegistros()" />
+
+    <div class="button-group-registros">
+      <button class="button" onclick="exportarBackup()" style="background: #3498db !important; color: white !important;">💾 Exportar Backup</button>
+      <button class="button" onclick="document.getElementById('importFile').click()" style="background: #e67e22 !important; color: white !important;">📁 Importar Backup</button>
+      <input type="file" id="importFile" accept=".txt" style="display: none;" onchange="importarBackup(event)">
+    </div>
+
+    <div id="historico"></div>
+  </div>
+</main>
+</main>
+<script>
+  let registros = [];
+
+  function carregarDados() {
+    try {
+      const data = localStorage.getItem('fatorx_registros');
+      if (data) registros = JSON.parse(data);
+      document.getElementById("totalRegistros").textContent = registros.length;
+      document.getElementById("ultimaAtualizacao").textContent = new Date().toLocaleString();
+    } catch (e) {
+      registros = [];
+    }
+  }
+
+  function carregarRegistros() {
+    const termo = document.getElementById("busca").value.toLowerCase();
+    const historico = document.getElementById("historico");
+    historico.innerHTML = "";
+
+    registros
+      .filter(r => r.cliente.toLowerCase().includes(termo))
+      .forEach((r, i) => {
+        const div = document.createElement("div");
+        div.className = "registro";
+        div.innerHTML = `
+          <div><strong>O.S.:</strong> ${r.os} | <strong>Cliente:</strong> ${r.cliente}</div>
+          <div><strong>Status:</strong> ${r.status} | <strong>Valor:</strong> R$ ${r.valor}</div>
+          <div><strong>Entrada:</strong> ${r.entrada || '---'} | <strong>Saída:</strong> ${r.saida || '---'}</div>
+          <div class="acoes">
+            <button onclick="editarRegistro(${i})">✏️ Editar</button>
+            <button onclick="apagarRegistro(${i})">🗑️ Apagar</button>
+            <button onclick="enviarWhatsAppRegistro(${i})">📲 WhatsApp</button>
+          </div>
+        `;
+        historico.appendChild(div);
+      });
+  }
+
+  function editarRegistro(i) {
+    alert("Função de edição ainda não implementada nesta página.");
+  }
+
+  function apagarRegistro(i) {
+    if (confirm("Tem certeza que deseja apagar este registro?")) {
+      registros.splice(i, 1);
+      salvar();
+      carregarRegistros();
+    }
+  }
+
+  function salvar() {
+    localStorage.setItem('fatorx_registros', JSON.stringify(registros));
+  }
+
+  function exportarBackup() {
+    const blob = new Blob([JSON.stringify(registros, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "backup_fatorx.txt";
+    a.click();
+  }
+
+  function importarBackup(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        registros = JSON.parse(e.target.result);
+        salvar();
+        carregarRegistros();
+      } catch (err) {
+        alert("Erro ao importar o arquivo.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function enviarWhatsAppRegistro(i) {
+    const r = registros[i];
+    if (!r.telefone) return alert("Sem telefone.");
+    const msg = `Olá ${r.cliente}, aqui está sua O.S. ${r.os}:\n\n*Entrada:* ${r.entrada || '---'}\n*Saída:* ${r.saida || '---'}\n*Diagnóstico:* ${r.diagnostico}\n*Solução:* ${r.solucao}\n*Valor:* R$ ${r.valor}\n*Status:* ${r.status}\n*Técnico:* ${r.tecnico}`;
+    window.open(`https://wa.me/${r.telefone}?text=${encodeURIComponent(msg)}`);
+  }
+
+  carregarDados();
+  carregarRegistros();
+</script>
+
+</body>
+</html>

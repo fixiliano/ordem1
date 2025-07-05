@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Ordem de Serviço</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #121212;
+      color: #ffffff;
+    }
+    header {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 2px solid #333;
+    }
+    header img {
+      height: 100px;
+    }
+    .menu-navegacao {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      background: #1e1e1e;
+      padding: 1rem;
+      border-bottom: 1px solid #333;
+      flex-wrap: wrap;
+    }
+    .menu-navegacao a {
+      padding: 0.7rem 1.5rem;
+      font-weight: bold;
+      font-size: 1rem;
+      background-color: #00cc99;
+      border: none;
+      border-radius: 8px;
+      color: black;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+    .menu-navegacao a:hover {
+      background-color: #00b386;
+    }
+    main {
+      padding: 2rem;
+      text-align: center;
+    }
+    .section {
+  background: #1e1e1e;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 2rem auto;
+  max-width: 800px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+label {
+  display: block;
+  margin-top: 1rem;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #2b2b2b;
+  color: #ffffff;
+}
+
+.button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #00cc99;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+  <header>
+    <img src="https://i.postimg.cc/YC6JsFr8/LOGO.png" alt="Logo FatorX" />
+  </header>
+  <div class="menu-navegacao">
+    <a href="ordem.html">📄 Ordem</a>
+    <a href="faturamento.html">💰 Faturamento</a>
+    <a href="servicos.html">🛠️ Serviços</a>
+    <a href="loja.html">🏠 Início</a>
+  </div>
+<main>
+  <div class="section">
+    <h2>📝 Registro de Diagnóstico</h2>
+    <label for="codigoGerado">Código Gerado:</label>
+    <input type="text" id="codigoGerado" readonly />
+    <button type="button" class="button" onclick="gerarNovoCodigo()">🔄 Gerar Novo Código</button>
+
+    <label for="os">Número da O.S.:</label>
+    <input type="text" id="os" readonly />
+
+    <label for="entrada">Data da entrada:</label>
+    <input type="text" id="entrada" oninput="formatarDataInput(this); limitarTamanhoData(this)" placeholder="dd/mm/aaaa" maxlength="10" />
+
+    <label for="saída">Data da Saída:</label>
+    <input type="text" id="saída" oninput="formatarDataInput(this); limitarTamanhoData(this)" placeholder="dd/mm/aaaa" maxlength="10" />
+
+    <label for="cliente">Nome do Cliente:</label>
+    <input type="text" id="cliente" />
+
+    <label for="marca">Marca:</label>
+    <input type="text" id="marca" />
+
+    <label for="modeloAparelho">Modelo do Aparelho:</label>
+    <input type="text" id="modeloAparelho" />
+
+    <label for="imei">IMEI:</label>
+    <input type="text" id="imei" />
+
+    <label for="diagnostico">Diagnóstico:</label>
+    <textarea id="diagnostico"></textarea>
+
+    <label for="solucao">Solução Aplicada:</label>
+    <textarea id="solucao"></textarea>
+
+    <label for="status">Status:</label>
+    <select id="status">
+      <option value="Em análise">Em análise</option>
+      <option value="Aguardando aprovação">Aguardando aprovação</option>
+      <option value="Aprovado">Aprovado</option>
+      <option value="Concluído">Concluído</option>
+      <option value="Entregue">Entregue</option>
+    </select>
+
+    <label for="valor">Valor (R$):</label>
+    <input type="text" id="valor" oninput="formatarMoeda(this)" />
+
+    <label for="custoPecas">Custo de Peças (R$):</label>
+    <input type="text" id="custoPecas" oninput="formatarMoeda(this)" />
+
+    <label for="tecnico">Técnico Responsável:</label>
+    <input type="text" id="tecnico" />
+
+    <label for="telefone">WhatsApp Cliente (ex: 5511999999999):</label>
+    <input type="text" id="telefone" />
+
+    <div class="button-group">
+      <button class="button" onclick="salvarRegistro()">💾 Salvar Registro</button>
+      <button class="button" onclick="enviarWhatsAppRegistro()">📲 Enviar WhatsApp</button>
+    </div>
+  </div>
+</main>
+</body>
+<script>
+  let registros = [];
+  let contadorOS = 0;
+
+  function carregarDados() {
+    try {
+      const registrosSalvos = localStorage.getItem('fatorx_registros');
+      const contadorSalvo = localStorage.getItem('fatorx_contador');
+      if (registrosSalvos) registros = JSON.parse(registrosSalvos);
+      if (contadorSalvo) contadorOS = parseInt(contadorSalvo);
+      else contadorOS = registros.length;
+    } catch (e) {
+      registros = [];
+    }
+  }
+
+  function salvarDados() {
+    localStorage.setItem('fatorx_registros', JSON.stringify(registros));
+    localStorage.setItem('fatorx_contador', contadorOS.toString());
+  }
+
+  function salvarRegistro() {
+    const novo = obterFormulario();
+    novo.data = new Date().toLocaleString();
+    registros.push(novo);
+    contadorOS++;
+    salvarDados();
+    atualizarOS();
+    alert("Registro salvo com sucesso!");
+    limparFormulario();
+  }
+
+  function obterFormulario() {
+    return {
+      os: document.getElementById("os").value,
+      codigoGerado: document.getElementById("codigoGerado").value,
+      cliente: document.getElementById("cliente").value,
+      marca: document.getElementById("marca").value,
+      modelo: document.getElementById("modeloAparelho").value,
+      imei: document.getElementById("imei").value,
+      diagnostico: document.getElementById("diagnostico").value,
+      solucao: document.getElementById("solucao").value,
+      status: document.getElementById("status").value,
+      valor: document.getElementById("valor").value,
+      custoPecas: document.getElementById("custoPecas").value,
+      tecnico: document.getElementById("tecnico").value,
+      telefone: document.getElementById("telefone").value,
+      entrada: document.getElementById("entrada").value,
+      saida: document.getElementById("saída").value
+    };
+  }
+
+  function limparFormulario() {
+    document.querySelectorAll("input, textarea, select").forEach(el => {
+      if (el.id !== "status") el.value = "";
+      else el.value = "Em análise";
+    });
+  }
+
+  function gerarNovoCodigo() {
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let codigo = '';
+    for (let i = 0; i < 9; i++) {
+      if (i === 3 || i === 6) codigo += Math.floor(Math.random() * 10);
+      else codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    document.getElementById("codigoGerado").value = codigo;
+  }
+
+  function atualizarOS() {
+    document.getElementById("os").value = `OS-${(contadorOS + 1).toString().padStart(4, '0')}`;
+    gerarNovoCodigo();
+  }
+
+  function formatarMoeda(input) {
+    let valor = input.value.replace(/\D/g, '');
+    if (!valor) return input.value = '';
+    valor = parseInt(valor);
+    const reais = Math.floor(valor / 100);
+    const centavos = valor % 100;
+    input.value = reais.toLocaleString('pt-BR') + ',' + (centavos < 10 ? '0' + centavos : centavos);
+  }
+
+  function formatarDataInput(input) {
+    let valor = input.value.replace(/\D/g, '');
+    if (valor.length >= 2) valor = valor.substring(0, 2) + '/' + valor.substring(2);
+    if (valor.length >= 5) valor = valor.substring(0, 5) + '/' + valor.substring(5, 9);
+    input.value = valor;
+  }
+
+  function limitarTamanhoData(input) {
+    if (input.value.length > 10) {
+      input.value = input.value.substring(0, 10);
+    }
+  }
+
+  function enviarWhatsAppRegistro() {
+    const r = obterFormulario();
+    if (!r.telefone) return alert("Número de telefone não informado");
+
+    const msg = `Olá ${r.cliente}, aqui está a prévia da sua O.S. ${r.os}:\n\n` +
+      `*Entrada:* ${r.entrada || 'Não informada'}\n` +
+      `*Saída:* ${r.saida || 'Não informada'}\n` +
+      `*Diagnóstico:* ${r.diagnostico}\n` +
+      `*Solução:* ${r.solucao}\n` +
+      `*Valor:* R$ ${r.valor}\n` +
+      `*Status:* ${r.status}\n` +
+      `*Técnico:* ${r.tecnico}`;
+
+    window.open(`https://wa.me/${r.telefone}?text=${encodeURIComponent(msg)}`);
+  }
+
+  carregarDados();
+  atualizarOS();
+</script>
+</html>
