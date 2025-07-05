@@ -47,6 +47,22 @@
       color: red;
       margin-top: 0.5rem;
     }
+
+        /* Para telas maiores que 600px */
+    @media (min-width: 600px) {
+      .faturamento-filtros {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+      }
+    }
+    
+    /* Para telas maiores que 768px */
+    @media (min-width: 768px) {
+      .faturamento-filtros select {
+        min-width: 120px;
+      }
+    }
   </style>
 </head>
 <body>
