@@ -3,6 +3,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - FatorxOS</title>
   <style>
     body {
@@ -17,12 +18,11 @@
       margin: 0;
     }
     .login-box {
-      background: #1e1e1e;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #000;
-      width: 300px;
-      text-align: center;
+  ...
+  width: 90%;
+  max-width: 320px;
+  ...
+
     }
     input {
       width: 100%;
@@ -47,7 +47,6 @@
       color: red;
       margin-top: 0.5rem;
     }
-
         /* Para telas maiores que 600px */
     @media (min-width: 600px) {
       .faturamento-filtros {
@@ -61,16 +60,6 @@
     @media (min-width: 768px) {
       .faturamento-filtros select {
         min-width: 120px;
-      }
-      /* Melhorias adicionais para mobile */
-    @media (max-width: 480px) {
-      main {
-        padding: 0.5rem;
-      }
-      
-      .section {
-        padding: 1rem;
-        margin-bottom: 1rem;
       }
     }
   </style>
@@ -94,7 +83,7 @@
 
       if (usuario === usuarioCorreto && senha === senhaCorreta) {
         localStorage.setItem('logado', 'true');
-        window.location.href = "loja.html";
+        window.location.href = "ordem.html";
       } else {
         document.getElementById('erro').textContent = "Usuário ou senha inválidos";
       }
